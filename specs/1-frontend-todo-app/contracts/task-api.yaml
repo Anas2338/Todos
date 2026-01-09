@@ -1,0 +1,270 @@
+openapi: 3.0.0
+info:
+  title: Todo Application Task API
+  version: 1.0.0
+  description: API contract for the frontend todo application task management
+
+paths:
+  /api/{user_id}/tasks:
+    get:
+      summary: Get all tasks for a user
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user
+      responses:
+        '200':
+          description: List of tasks for the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized - user not authenticated
+        '403':
+          description: Forbidden - user trying to access another user's tasks
+    post:
+      summary: Create a new task
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskCreateRequest'
+      responses:
+        '201':
+          description: Task created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Bad request - invalid input data
+        '401':
+          description: Unauthorized - user not authenticated
+        '403':
+          description: Forbidden - user trying to create task for another user
+
+  /api/{user_id}/tasks/{id}:
+    get:
+      summary: Get a specific task
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the task
+      responses:
+        '200':
+          description: Task details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '401':
+          description: Unauthorized - user not authenticated
+        '403':
+          description: Forbidden - user trying to access another user's task
+        '404':
+          description: Task not found
+    put:
+      summary: Update a task
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TaskUpdateRequest'
+      responses:
+        '200':
+          description: Task updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Bad request - invalid input data
+        '401':
+          description: Unauthorized - user not authenticated
+        '403':
+          description: Forbidden - user trying to update another user's task
+        '404':
+          description: Task not found
+    delete:
+      summary: Delete a task
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the task
+      responses:
+        '204':
+          description: Task deleted successfully
+        '401':
+          description: Unauthorized - user not authenticated
+        '403':
+          description: Forbidden - user trying to delete another user's task
+        '404':
+          description: Task not found
+
+  /api/{user_id}/tasks/{id}/complete:
+    patch:
+      summary: Mark a task as complete or incomplete
+      parameters:
+        - name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the user
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the task
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                completed:
+                  type: boolean
+                  description: Whether the task is completed
+              required:
+                - completed
+      responses:
+        '200':
+          description: Task completion status updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '400':
+          description: Bad request - invalid input data
+        '401':
+          description: Unauthorized - user not authenticated
+        '403':
+          description: Forbidden - user trying to update another user's task
+        '404':
+          description: Task not found
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the task
+        title:
+          type: string
+          description: Task title (1-100 characters)
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          description: Task description (optional, 0-1000 characters)
+          maxLength: 1000
+        completed:
+          type: boolean
+          description: Whether the task is completed
+          default: false
+        userId:
+          type: string
+          description: ID of the user who owns this task
+        createdAt:
+          type: string
+          format: date-time
+          description: Timestamp when the task was created
+        updatedAt:
+          type: string
+          format: date-time
+          description: Timestamp when the task was last updated
+      required:
+        - id
+        - title
+        - completed
+        - userId
+        - createdAt
+        - updatedAt
+
+    TaskCreateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Task title (1-100 characters)
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          description: Task description (optional, 0-1000 characters)
+          maxLength: 1000
+      required:
+        - title
+
+    TaskUpdateRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Task title (1-100 characters)
+          minLength: 1
+          maxLength: 100
+        description:
+          type: string
+          description: Task description (optional, 0-1000 characters)
+          maxLength: 1000
+      required: []
+
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - BearerAuth: []
