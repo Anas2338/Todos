@@ -21,7 +21,15 @@ jobs:
         git config --global user.email "bot@github.com"
         git config --global user.name "Bot"
 
-        git clone https://huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME hf
+        # Clone the Hugging Face Space (or create if empty)
+        git clone https://huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME hf || {
+          echo "Space doesn't exist or is empty, initializing..."
+          mkdir -p hf
+          cd hf
+          git init
+          git remote add origin https://huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME
+          cd ..
+        }
 
         # Copy all necessary files from backend directory
         cp fullstack-todo/backend/main.py hf/
@@ -36,5 +44,8 @@ jobs:
 
         cd hf
         git add .
-        git commit -m "Deploy backend to Hugging Face" || echo "No changes"
-        git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME main
+        git commit -m "Deploy backend to Hugging Face" || echo "No changes to commit"
+
+        # Push to Hugging Face (force push on first deploy)
+        git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME main || \
+        git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME main --force
