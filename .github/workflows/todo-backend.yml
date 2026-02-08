@@ -29,8 +29,6 @@ jobs:
         cp fullstack-todo/backend/uv.lock hf/
         cp fullstack-todo/backend/Dockerfile hf/
         cp -r fullstack-todo/backend/src hf/
-        cp -r fullstack-todo/backend/alembic hf/
-        cp fullstack-todo/backend/README.HF.md hf/README.md
 
         cd hf
         git add .
