@@ -1,7 +1,7 @@
 import { useState, ChangeEvent } from 'react';
 import { validateTaskForm } from '@/lib/utils/validation';
 import { Task } from '@/types/tasks';
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
 
 interface TaskFormProps {

@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { validateLoginForm } from '@/lib/utils/validation';
-import Button from '@/components/ui/Button';
+import Button from '@/components/ui/button';
 import Input from '@/components/ui/input';
 
 interface FormData {
