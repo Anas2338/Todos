@@ -24,10 +24,10 @@ jobs:
         git clone https://huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME_CHATBOT hf
 
         # Copy all necessary files from backend directory
+        cp fullstack-todo/chatbot_backend/src/main.py hf/
         cp fullstack-todo/chatbot_backend/pyproject.toml hf/
         cp fullstack-todo/chatbot_backend/uv.lock hf/
         cp fullstack-todo/chatbot_backend/Dockerfile hf/
-        cp -r fullstack-todo/chatbot_backend/src hf/
 
         cd hf
         git add .
