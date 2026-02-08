@@ -57,8 +57,8 @@ EXPOSE 7860
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
-  CMD python -c "import requests; r = requests.get('http://localhost:8000/health'); exit(0 if r.status_code == 200 else 1)" || exit 1
+  CMD python -c "import requests; r = requests.get('http://localhost:7860/health'); exit(0 if r.status_code == 200 else 1)" || exit 1
 
 # Use dumb-init to handle signals properly
 ENTRYPOINT ["/usr/bin/dumb-init"]
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "7860"]
