@@ -53,7 +53,7 @@ RUN mkdir -p /app/data && chown appuser:appgroup /app/data
 # Switch to non-root user
 USER appuser
 
-EXPOSE 8000
+EXPOSE 7860
 
 # Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \

@@ -21,31 +21,14 @@ jobs:
         git config --global user.email "bot@github.com"
         git config --global user.name "Bot"
 
-        # Clone the Hugging Face Space (or create if empty)
-        git clone https://huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME hf || {
-          echo "Space doesn't exist or is empty, initializing..."
-          mkdir -p hf
-          cd hf
-          git init
-          git remote add origin https://huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME
-          cd ..
-        }
+        git clone https://huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME hf
 
-        # Copy all necessary files from backend directory
         cp fullstack-todo/backend/main.py hf/
         cp fullstack-todo/backend/pyproject.toml hf/
         cp fullstack-todo/backend/uv.lock hf/
         cp fullstack-todo/backend/Dockerfile hf/
-        cp -r fullstack-todo/backend/src hf/
-        cp -r fullstack-todo/backend/alembic hf/
-
-        # Copy Hugging Face specific README
-        cp fullstack-todo/backend/README.HF.md hf/README.md
 
         cd hf
         git add .
-        git commit -m "Deploy backend to Hugging Face" || echo "No changes to commit"
-
-        # Push to Hugging Face (force push on first deploy)
-        git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME main || \
-        git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME main --force
+        git commit -m "Deploy" || echo "No changes"
+        git push https://$HF_USERNAME:$HF_TOKEN@huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME main
