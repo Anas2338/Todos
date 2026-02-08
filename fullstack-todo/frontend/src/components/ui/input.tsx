@@ -7,6 +7,7 @@ interface BaseInputProps {
   className?: string;
   showPasswordToggle?: boolean;
   as?: 'input' | 'textarea';
+  type?: string;
 }
 
 type InputProps = BaseInputProps &
