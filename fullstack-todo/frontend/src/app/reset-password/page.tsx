@@ -1,8 +1,9 @@
 'use client';
 
+import { Suspense } from 'react';
 import PasswordResetForm from '@/components/auth/password-reset-form';
 
-export default function PasswordResetPage() {
+function PasswordResetContent() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -17,5 +18,13 @@ export default function PasswordResetPage() {
         <PasswordResetForm />
       </div>
     </div>
+  );
+}
+
+export default function PasswordResetPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PasswordResetContent />
+    </Suspense>
   );
 }

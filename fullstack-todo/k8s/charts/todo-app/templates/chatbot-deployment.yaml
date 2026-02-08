@@ -1,0 +1,69 @@
+{{- if .Values.chatbot.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "todo-app.fullname" . }}-chatbot
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "todo-app.labels" . | nindent 4 }}
+    app: chatbot
+spec:
+  replicas: {{ .Values.chatbot.replicaCount | default 1 }}
+  selector:
+    matchLabels:
+      {{- include "todo-app.selectorLabels" . | nindent 6 }}
+      app: chatbot
+  template:
+    metadata:
+      labels:
+        {{- include "todo-app.selectorLabels" . | nindent 8 }}
+        app: chatbot
+    spec:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 2000
+      containers:
+        - name: chatbot
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: false
+            runAsNonRoot: true
+            runAsUser: 1000
+            capabilities:
+              drop:
+                - ALL
+          image: "{{ .Values.global.imageRegistry }}{{ .Values.chatbot.image.repository }}:{{ .Values.chatbot.image.tag }}"
+          imagePullPolicy: {{ .Values.chatbot.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.chatbot.service.port }}
+          env:
+            - name: DATABASE_URL
+              value: {{ .Values.chatbot.env.DATABASE_URL | quote }}
+          resources:
+            {{- toYaml .Values.chatbot.resources | nindent 12 }}
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.chatbot.service.port }}
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.chatbot.service.port }}
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+          startupProbe:
+            httpGet:
+              path: /health
+              port: {{ .Values.chatbot.service.port }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 30
+{{- end }}

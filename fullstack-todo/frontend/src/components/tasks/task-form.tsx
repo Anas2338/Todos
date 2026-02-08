@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, ChangeEvent } from 'react';
 import { validateTaskForm } from '@/lib/utils/validation';
 import { Task } from '@/types/tasks';
-import Button from '@/components/ui/button';
+import Button from '@/components/ui/Button';
 import Input from '@/components/ui/input';
 
 interface TaskFormProps {
@@ -53,7 +53,7 @@ export default function TaskForm({ task, onSubmit, onCancel, submitButtonText = 
           name="title"
           type="text"
           value={title}
-          onChange={(e) => setTitle(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
           required
           error={errors.title}
           placeholder="Task title"
@@ -68,7 +68,7 @@ export default function TaskForm({ task, onSubmit, onCancel, submitButtonText = 
           as="textarea"
           rows={4}
           value={description}
-          onChange={(e) => setDescription(e.target.value)}
+          onChange={(e: ChangeEvent<HTMLTextAreaElement>) => setDescription(e.target.value)}
           error={errors.description}
           placeholder="Task description (optional)"
         />

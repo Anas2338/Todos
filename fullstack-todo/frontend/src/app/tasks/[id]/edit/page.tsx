@@ -6,7 +6,7 @@ import { useAuth } from '@/hooks/use-auth';
 import { useTasks } from '@/hooks/use-tasks';
 import { Task } from '@/types/tasks';
 import TaskForm from '@/components/tasks/task-form';
-import Button from '@/components/ui/button';
+import Button from '@/components/ui/Button';
 import LoadingSpinner from '@/components/common/loading-spinner';
 
 export default function EditTaskPage() {

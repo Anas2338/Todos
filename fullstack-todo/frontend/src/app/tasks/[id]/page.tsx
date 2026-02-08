@@ -5,7 +5,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { useAuth } from '@/hooks/use-auth';
 import { useTasks } from '@/hooks/use-tasks';
 import { Task } from '@/types/tasks';
-import Button from '@/components/ui/button';
+import Button from '@/components/ui/Button';
 import LoadingSpinner from '@/components/common/loading-spinner';
 
 // Helper function to safely format dates

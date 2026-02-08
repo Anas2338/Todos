@@ -1,0 +1,131 @@
+# API Contract: Todo + Chatbot Backend Services
+
+## Backend Service API
+
+### Todo Management Endpoints
+
+#### GET /api/todos
+- **Description**: Retrieve all todos for the authenticated user
+- **Authentication**: Required (JWT Token in Authorization header)
+- **Response**:
+  - 200: Array of Todo objects
+    ```json
+    [
+      {
+        "id": "uuid-string",
+        "title": "string",
+        "description": "string",
+        "completed": "boolean",
+        "created_at": "datetime",
+        "updated_at": "datetime"
+      }
+    ]
+    ```
+
+#### POST /api/todos
+- **Description**: Create a new todo
+- **Authentication**: Required (JWT Token in Authorization header)
+- **Request Body**:
+  ```json
+  {
+    "title": "string (required)",
+    "description": "string (optional)",
+    "completed": "boolean (optional, default: false)"
+  }
+  ```
+- **Response**:
+  - 201: Created Todo object
+  - 400: Invalid request
+  - 401: Unauthorized
+
+#### GET /api/todos/{id}
+- **Description**: Retrieve a specific todo by ID
+- **Authentication**: Required (JWT Token in Authorization header)
+- **Response**:
+  - 200: Todo object
+  - 401: Unauthorized
+  - 404: Todo not found
+
+#### PUT /api/todos/{id}
+- **Description**: Update a specific todo
+- **Authentication**: Required (JWT Token in Authorization header)
+- **Request Body**:
+  ```json
+  {
+    "title": "string (optional)",
+    "description": "string (optional)",
+    "completed": "boolean (optional)"
+  }
+  ```
+- **Response**:
+  - 200: Updated Todo object
+  - 400: Invalid request
+  - 401: Unauthorized
+  - 404: Todo not found
+
+#### DELETE /api/todos/{id}
+- **Description**: Delete a specific todo
+- **Authentication**: Required (JWT Token in Authorization header)
+- **Response**:
+  - 204: Success (no content)
+  - 401: Unauthorized
+  - 404: Todo not found
+
+## Chatbot Backend Service API
+
+### Chat Management Endpoints
+
+#### POST /api/chat/conversation
+- **Description**: Start a new chat conversation
+- **Authentication**: Required (JWT Token in Authorization header)
+- **Request Body**:
+  ```json
+  {
+    "message": "string (required)",
+    "context": "object (optional)"
+  }
+  ```
+- **Response**:
+  - 200: Response object
+    ```json
+    {
+      "conversation_id": "uuid-string",
+      "response": "string",
+      "timestamp": "datetime"
+    }
+    ```
+  - 400: Invalid request
+  - 401: Unauthorized
+
+#### POST /api/chat/conversation/{conversation_id}
+- **Description**: Continue an existing chat conversation
+- **Authentication**: Required (JWT Token in Authorization header)
+- **Request Body**:
+  ```json
+  {
+    "message": "string (required)"
+  }
+  ```
+- **Response**:
+  - 200: Response object
+    ```json
+    {
+      "conversation_id": "uuid-string",
+      "response": "string",
+      "timestamp": "datetime"
+    }
+    ```
+  - 400: Invalid request
+  - 401: Unauthorized
+  - 404: Conversation not found
+
+## Frontend-Backend Communication Protocol
+
+### Service Discovery
+- Backend service is accessible at: `http://todo-backend-service:8000`
+- Chatbot service is accessible at: `http://todo-chatbot-service:8001`
+
+### Configuration Environment Variables
+- `BACKEND_API_URL`: Base URL for backend API (defaults to `http://todo-backend-service:8000`)
+- `CHATBOT_API_URL`: Base URL for chatbot API (defaults to `http://todo-chatbot-service:8001`)
+- `DATABASE_URL`: Database connection string

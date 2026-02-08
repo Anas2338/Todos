@@ -1,0 +1,20 @@
+{{- if .Values.chatbot.enabled }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "todo-app.fullname" . }}-chatbot-service
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "todo-app.labels" . | nindent 4 }}
+    app: chatbot
+spec:
+  type: {{ .Values.chatbot.service.type }}
+  ports:
+    - port: {{ .Values.chatbot.service.port }}
+      targetPort: {{ .Values.chatbot.service.port }}
+      protocol: TCP
+      name: http
+  selector:
+    {{- include "todo-app.selectorLabels" . | nindent 4 }}
+    app: chatbot
+{{- end }}

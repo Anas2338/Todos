@@ -1,0 +1,94 @@
+# Default values for todo-app
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+# Global configuration
+global:
+  imageRegistry: ""
+  imagePullSecrets: []
+
+# Frontend service configuration
+frontend:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: todo-frontend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: NodePort
+    port: 3000
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+  env:
+    BACKEND_API_URL: http://todo-app-backend-service:8000
+    CHATBOT_API_URL: http://todo-app-chatbot-service:8001
+
+# Backend service configuration
+backend:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: todo-backend
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8000
+  resources:
+    limits:
+      cpu: 200m
+      memory: 256Mi
+    requests:
+      cpu: 100m
+      memory: 128Mi
+  env:
+    DATABASE_URL: postgresql://todo-app-db-service:5432/todoapp
+
+# Chatbot backend configuration
+chatbot:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: todo-chatbot
+    tag: latest
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 8001
+  resources:
+    limits:
+      cpu: 200m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  env:
+    DATABASE_URL: postgresql://todo-app-db-service:5432/todoapp
+
+# Database configuration
+database:
+  enabled: true
+  replicaCount: 1
+  image:
+    repository: postgres:13-alpine
+    pullPolicy: IfNotPresent
+  service:
+    type: ClusterIP
+    port: 5432
+  resources:
+    limits:
+      cpu: 300m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  persistence:
+    enabled: true
+    size: 1Gi
+    storageClass: ""

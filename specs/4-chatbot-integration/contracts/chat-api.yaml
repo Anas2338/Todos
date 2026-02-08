@@ -1,0 +1,133 @@
+# Chat API Contract
+
+## Overview
+This document defines the API contracts for the chatbot frontend integration with the Phase III backend.
+
+## Base URL
+`/api/chat`
+
+## Authentication
+All endpoints require authentication via existing Better Auth session cookies or authentication headers.
+
+## Endpoints
+
+### POST /send
+Send a new message to the chat backend and receive a response.
+
+#### Request
+```json
+{
+  "message": "Add a task to buy groceries by Friday",
+  "conversationId": "optional-conversation-id-if-existing"
+}
+```
+
+#### Response (Success)
+```json
+{
+  "success": true,
+  "conversationId": "unique-conversation-identifier",
+  "userMessage": {
+    "id": "unique-message-id",
+    "content": "Add a task to buy groceries by Friday",
+    "sender": "user",
+    "timestamp": "2023-12-01T10:00:00Z",
+    "status": "sent"
+  },
+  "assistantMessage": {
+    "id": "unique-assistant-message-id",
+    "content": "I've added the task 'buy groceries' with a due date of Friday.",
+    "sender": "assistant",
+    "timestamp": "2023-12-01T10:00:02Z",
+    "status": "sent"
+  }
+}
+```
+
+#### Response (Error)
+```json
+{
+  "success": false,
+  "error": "Error message describing the issue",
+  "retryable": true
+}
+```
+
+### GET /history
+Retrieve the conversation history for a specific conversation.
+
+#### Query Parameters
+- `conversationId` (required): The ID of the conversation to retrieve
+
+#### Response (Success)
+```json
+{
+  "conversation": {
+    "id": "conversation-id",
+    "userId": "user-identifier",
+    "messages": [
+      {
+        "id": "message-id",
+        "content": "Message content",
+        "sender": "user",
+        "timestamp": "2023-12-01T10:00:00Z",
+        "status": "sent"
+      }
+    ],
+    "createdAt": "2023-12-01T10:00:00Z",
+    "updatedAt": "2023-12-01T10:00:00Z"
+  }
+}
+```
+
+### POST /start
+Start a new conversation.
+
+#### Request
+```json
+{}
+```
+
+#### Response (Success)
+```json
+{
+  "success": true,
+  "conversationId": "newly-created-conversation-id"
+}
+```
+
+### GET /conversations
+Retrieve a list of recent conversations for the authenticated user.
+
+#### Response (Success)
+```json
+{
+  "conversations": [
+    {
+      "id": "conversation-id",
+      "userId": "user-identifier",
+      "lastMessage": "Summary of last message",
+      "createdAt": "2023-12-01T10:00:00Z",
+      "updatedAt": "2023-12-01T10:00:00Z"
+    }
+  ]
+}
+```
+
+## Error Responses
+All error responses follow this structure:
+```json
+{
+  "success": false,
+  "error": "Descriptive error message",
+  "errorCode": "ERROR_CODE_STRING",
+  "retryable": true/false
+}
+```
+
+## Common Error Codes
+- `AUTH_ERROR`: Authentication required or invalid
+- `RATE_LIMIT_EXCEEDED`: Too many requests
+- `CONVERSATION_NOT_FOUND`: Referenced conversation doesn't exist
+- `BACKEND_UNAVAILABLE`: Backend service temporarily unavailable
+- `INVALID_INPUT`: Malformed request
