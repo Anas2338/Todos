@@ -20,11 +20,9 @@ const Input: React.FC<InputProps> = (props) => {
     className = '',
     showPasswordToggle = false,
     as = 'input',
+    type,
     ...otherProps
   } = props;
-
-  // Extract type from otherProps if it's an input
-  const type = as === 'input' ? (otherProps as InputHTMLAttributes<HTMLInputElement>).type : undefined;
 
   const [showPassword, setShowPassword] = useState(false);
 

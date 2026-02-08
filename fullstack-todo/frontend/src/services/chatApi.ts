@@ -260,13 +260,8 @@ async function getAuthHeaders(): Promise<Record<string, string>> {
   const token = await authService.getAuthToken();
 
   if (token) {
-    // Log first 20 chars for debugging (but avoid logging full token in production)
-    if (process.env.NODE_ENV !== 'production') {
-      console.log('Sending token with request:', token.substring(0, 20) + '...');
-    }
     return { Authorization: `Bearer ${token}` };
   }
 
-  console.log('No token available for request');
   return {};
 }

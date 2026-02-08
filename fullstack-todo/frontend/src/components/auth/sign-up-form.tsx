@@ -58,6 +58,8 @@ export default function SignUpForm() {
 
     try {
       await register(formData.email, formData.password, formData.name);
+      // Use window.location for a full page redirect to ensure cookies are properly set
+      window.location.href = '/dashboard';
     } catch (err) {
       setError('Registration failed. Please try again.');
       console.error('Registration error:', err);

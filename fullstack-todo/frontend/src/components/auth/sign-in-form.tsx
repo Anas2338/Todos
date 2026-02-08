@@ -55,6 +55,8 @@ export default function SignInForm() {
 
     try {
       await login(formData.email, formData.password);
+      // Use window.location for a full page redirect to ensure cookies are properly set
+      window.location.href = '/dashboard';
     } catch (err) {
       setError('Invalid email or password. Please try again.');
       console.error('Login error:', err);
