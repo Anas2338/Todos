@@ -23,10 +23,14 @@ jobs:
 
         git clone https://huggingface.co/spaces/$HF_USERNAME/$HF_SPACE_NAME hf
 
+        # Copy all necessary files from backend directory
         cp fullstack-todo/backend/main.py hf/
         cp fullstack-todo/backend/pyproject.toml hf/
         cp fullstack-todo/backend/uv.lock hf/
         cp fullstack-todo/backend/Dockerfile hf/
+        cp -r fullstack-todo/backend/src hf/
+        cp -r fullstack-todo/backend/alembic hf/
+        cp fullstack-todo/backend/README.HF.md hf/README.md
 
         cd hf
         git add .
